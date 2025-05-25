@@ -38,9 +38,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Manejo explícito de solicitudes OPTIONS (preflight)
-app.options('*', cors());
-
 // Rutas
 app.use('/api/productos', productoRoutes);
 
