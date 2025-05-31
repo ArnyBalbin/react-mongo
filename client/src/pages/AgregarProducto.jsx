@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { crearProducto } from "../services/productoService";
 
 export const AgregarProducto = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +10,7 @@ export const AgregarProducto = () => {
     stock: "",
     categoria: "",
   });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,10 +23,10 @@ export const AgregarProducto = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/productos`, {
+      await crearProducto({
         ...formData,
-        precio: parseFloat(formData.precio),  // Convertir a número
-        stock: parseInt(formData.stock)       // Convertir a entero
+        precio: parseFloat(formData.precio),
+        stock: parseInt(formData.stock)
       });
       navigate("/");
     } catch (error) {

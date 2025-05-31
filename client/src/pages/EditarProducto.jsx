@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { obtenerProducto, actualizarProducto } from "../services/productoService";
 
 export const EditarProducto = () => {
   const { id } = useParams();
@@ -16,7 +16,7 @@ export const EditarProducto = () => {
   useEffect(() => {
     const cargarProducto = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/productos/${id}`);
+        const res = await obtenerProducto(id);
         setProducto({
           ...res.data,
           precio: res.data.precio.toString(),
@@ -30,7 +30,6 @@ export const EditarProducto = () => {
     cargarProducto();
   }, [id]);
 
-  // Manejar cambios en los inputs
   const handleChange = (e) => {
     setProducto({
       ...producto,
@@ -38,11 +37,10 @@ export const EditarProducto = () => {
     });
   };
 
-  // Enviar datos actualizados
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/productos/${id}`, {
+      await actualizarProducto(id, {
         nombre: producto.nombre,
         descripcion: producto.descripcion,
         precio: parseFloat(producto.precio),
@@ -59,9 +57,10 @@ export const EditarProducto = () => {
     <div className="card shadow border-0 rounded-4 my-4">
       <div className="card-body p-4">
         <h2 className="text-center mb-4">Editar Producto</h2>
-        
+
         {producto.nombre ? (
           <form onSubmit={handleSubmit}>
+            {/* ... campos como antes ... */}
             <div className="mb-3">
               <label className="form-label">Nombre</label>
               <input
@@ -73,7 +72,6 @@ export const EditarProducto = () => {
                 required
               />
             </div>
-
             <div className="mb-3">
               <label className="form-label">Descripción</label>
               <textarea
@@ -85,7 +83,6 @@ export const EditarProducto = () => {
                 required
               />
             </div>
-
             <div className="mb-3">
               <label className="form-label">Precio</label>
               <input
@@ -98,7 +95,6 @@ export const EditarProducto = () => {
                 required
               />
             </div>
-
             <div className="mb-3">
               <label className="form-label">Stock</label>
               <input
@@ -110,7 +106,6 @@ export const EditarProducto = () => {
                 required
               />
             </div>
-
             <div className="mb-3">
               <label className="form-label">Categoría</label>
               <select
@@ -129,14 +124,8 @@ export const EditarProducto = () => {
             </div>
 
             <div className="d-flex justify-content-center gap-3">
-              <button type="submit" className="btn btn-primary">
-                Guardar Cambios
-              </button>
-              <button 
-                type="button" 
-                className="btn btn-secondary"
-                onClick={() => navigate("/")}
-              >
+              <button type="submit" className="btn btn-primary">Guardar Cambios</button>
+              <button type="button" className="btn btn-secondary" onClick={() => navigate("/")}>
                 Cancelar
               </button>
             </div>

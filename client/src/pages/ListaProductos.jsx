@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { obtenerProductos, eliminarProducto } from "../services/productoService";
 
 export const ListaProductos = () => {
   const [productos, setProductos] = useState([]);
@@ -10,14 +10,22 @@ export const ListaProductos = () => {
   }, []);
 
   const cargarProductos = async () => {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/productos`);
-    setProductos(res.data.productos);
+    try {
+      const res = await obtenerProductos();
+      setProductos(res.data.productos);
+    } catch (error) {
+      alert("Error al cargar productos");
+    }
   };
 
-  const eliminarProducto = async (id) => {
+  const handleEliminar = async (id) => {
     if (window.confirm("¿Estás seguro de eliminar este producto?")) {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/productos/${id}`);
-      cargarProductos();
+      try {
+        await eliminarProducto(id);
+        cargarProductos();
+      } catch (error) {
+        alert("Error al eliminar el producto");
+      }
     }
   };
 
@@ -46,16 +54,10 @@ export const ListaProductos = () => {
                   <td>{producto.stock}</td>
                   <td>{producto.categoria}</td>
                   <td>
-                    <Link
-                      to={`/editar-producto/${producto._id}`}
-                      className="btn btn-sm btn-primary me-1"
-                    >
+                    <Link to={`/editar-producto/${producto._id}`} className="btn btn-sm btn-primary me-1">
                       <i className="fas fa-edit"></i>
                     </Link>
-                    <button
-                      onClick={() => eliminarProducto(producto._id)}
-                      className="btn btn-sm btn-danger"
-                    >
+                    <button onClick={() => handleEliminar(producto._id)} className="btn btn-sm btn-danger">
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </td>
